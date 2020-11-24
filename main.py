@@ -48,8 +48,19 @@ def start_message(message):
 
 # функция показа всех продуктов
 @bot.message_handler(commands=['список'])
-def start_message(message):
-    bot.send_message(message.chat.id, freezer.keys())
+def show_dict(message):
+    string = ''
+    # проверка на пустой холодос
+    if freezer == {}:
+        bot.send_message(message.chat.id, 'В вашем холодильнике ничего нет. Скорее сходите закупиться!')
+    else:
+        for key, value in freezer.items():
+            # строка - ключ значение переход на другую строку
+            part_string = f'{key} {value} \n'
+            # записываем это все в большую строку
+            string += part_string
+        # выводим значение
+        bot.send_message(message.chat.id, string)
 
 
 # функция подсказки
@@ -79,8 +90,11 @@ def gettext(message):
     # тут происходит обработка удаления
     elif del_or_not == 1:
         mess = message.text
-        del freezer[mess]
-        send_text(message, 'Удалено!')
+        try:
+            del freezer[mess]
+            send_text(message, 'Удалено!')
+        except KeyError:
+            send_text(message, 'такого продукта нет!')
         del_or_not = 0
     else:
         send_text(message, 'Неизвестная команда')
