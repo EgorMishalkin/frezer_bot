@@ -80,10 +80,10 @@ while com != "стоп":
     print("====================")
     com = input('Введите команду: ')
     # добавление продукта
-    stop = ''
 
     if 'добавить' in com.lower():
-        while stop != "назад":
+        times = int(input('Сколько продуктов вы хотите положить? '))
+        for i in range (times):
             product = input("Название продукта: ")
             # проверка на то, число ли вводит пользователь или нет
             try:
@@ -92,14 +92,9 @@ while com != "стоп":
             # если не число
             except ValueError:
                 print('Недопустимое значение! введите число')
-            stop = input("Продолжить или назад? ")
-            if 'назад' in stop.lower():
-                print("Возвращаемся в меню...")
 
-        if 'назад' in stop.lower():
-            break
-        else:
-            pass
+
+
             # удаление продукта
     if 'удалить' in com.lower():
         print("Какой продукт удалить: ", end='')
@@ -122,7 +117,8 @@ while com != "стоп":
         print('завершаю работу')
         break
 
-
+    elif product == 'назад':
+        print()
 
     else:
         print('Неизвестная команда')
