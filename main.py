@@ -1,3 +1,7 @@
+import pymorphy2
+
+
+morph = pymorphy2.MorphAnalyzer()
 # словарь со всеми продуктами
 freezer = {'сок': 30,
            'яблоко': 25,
@@ -24,17 +28,25 @@ def notice():
     global freezer
     clear_freezer = {}
     for key, value in freezer.items():
+        p = morph.parse(key)[0]
+        if 'plur' in p.tag:
+            verb = 'испортятся'
+        else:
+            verb = 'испортится'
         if value == 3:
-            print(f'{key} испортится через 3 дня! поторопитесь съесть)')
+            print(f'{key} {verb} через 3 дня! поторопитесь съесть)')
             clear_freezer[key] = value
         elif value == 2:
-            print(f'{key} испортится через 2 дня! поторопитесь съесть!')
+            print(f'{key} {verb} через 2 дня! поторопитесь съесть!')
             clear_freezer[key] = value
         elif value == 1:
-            print(f'{key} испортится завтра! поторопитесь съесть!')
+            print(f'{key} {verb} завтра! поторопитесь съесть!')
             clear_freezer[key] = value
         elif value == 0:
-            print(f'{key} испортился! обязательно выкиньте продукт')
+            if 'plur' in p.tag:
+                print(f'{key} испортились! обязательно выкиньте продукт')
+            else:
+                print(f'{key} испортился! обязательно выкиньте продукт')
         else:
             clear_freezer[key] = value
 
@@ -64,8 +76,8 @@ while com != "стоп":
     # добавление продукта
     stop = ''
 
-    while stop != "назад":
-        if 'добавить' in com.lower():
+    if 'добавить' in com.lower():
+        while stop != "назад":
             product = input("Название продукта: ")
             # проверка на то, число ли вводит пользователь или нет
             try:
