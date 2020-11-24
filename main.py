@@ -6,13 +6,6 @@ freezer = {'сок': 30,
 com = ''
 
 
-# функция сортировки
-def notice():
-    for key, value in freezer.items():
-        if value == 1:
-            print(f'срок годности {key} истек')
-
-
 # функция добавления продукта
 def add(what, how_long):
     freezer[what] = how_long
@@ -25,6 +18,20 @@ def delete(what):
     print('Успешно удалено!')
 
 
+# функция сортировки
+def notice():
+    for key, value in freezer.items():
+        if value == 3:
+            print(f'{key} испортится через 3 дня! поторопитесь съесть)')
+        if value == 2:
+            print(f'{key} испортится через 2 дня! поторопитесь съесть!')
+        if value == 1:
+            print(f'{key} испортится завтра! поторопитесь съесть!')
+        if value == 0:
+            print(f'{key} испортился! обязательно выкиньте продукт')
+            print(freezer)
+
+
 # основной цикл
 while com != "стоп":
     print("--------------------")
@@ -32,7 +39,7 @@ while com != "стоп":
     print("======Команды:======")
     print("1. Добавить продукт")
     print("2. Удалить продукт")
-    print("3. Отсортировать список")
+    print("3. увед")
     print("0. Выход")
     print("====================")
     com = input('Введите команду: ')
@@ -41,7 +48,7 @@ while com != "стоп":
         product = input("Название продукта: ")
         # проверка на то, число ли вводит пользователь или нет
         try:
-            time = int(input(("сколько дней хранится?: ")))
+            time = int(input("сколько дней хранится?: "))
             add(product, time)
         # если не число
         except ValueError:
@@ -58,7 +65,7 @@ while com != "стоп":
 
     # сортирока списка продуктов
 
-    elif 'уведомления' in com.lower():
+    elif 'увед' in com.lower():
         notice()
 
     # завершение
