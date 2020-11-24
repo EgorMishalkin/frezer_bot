@@ -81,7 +81,12 @@ def gettext(message):
         mess = message.text.split(' ')
         try:
             # пробуем добавить в слоарь значение
-            freezer[mess[0]] = mess[1]
+            string = ''
+            # mess[0:-1] - название продукта
+            for i in mess[0:-1]:
+                string += f'{i} '
+            # строка string[0:-1] убирает лишний пробел в конце
+            freezer[string[0:-1]] = mess[-1]
             send_text(message, 'Успешно добавлено!')
         # ошибка при вводе
         except IndexError:
