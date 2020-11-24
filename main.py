@@ -20,16 +20,34 @@ def delete(what):
 
 # функция сортировки
 def notice():
+    # создаем новый словарь, где будем записывать
+    global freezer
+    clear_freezer = {}
     for key, value in freezer.items():
         if value == 3:
             print(f'{key} испортится через 3 дня! поторопитесь съесть)')
-        if value == 2:
+            clear_freezer[key] = value
+        elif value == 2:
             print(f'{key} испортится через 2 дня! поторопитесь съесть!')
-        if value == 1:
+            clear_freezer[key] = value
+        elif value == 1:
             print(f'{key} испортится завтра! поторопитесь съесть!')
-        if value == 0:
+            clear_freezer[key] = value
+        elif value == 0:
             print(f'{key} испортился! обязательно выкиньте продукт')
-            print(freezer)
+        else:
+            clear_freezer[key] = value
+
+    freezer = clear_freezer
+
+
+# функция нового дня(все сроки годности - 1)
+def new_day():
+    # уменьшам каждое значение на 1
+    global freezer
+    for key, value in freezer.items():
+        value -= 1
+        freezer[key] = value
 
 
 # основной цикл
@@ -56,7 +74,12 @@ while com != "стоп":
 
     # удаление продукта
     elif 'удалить' in com.lower():
-        product = input("Какой продукт удалить: ")
+        print("Какой продукт удалить: ", end='')
+        # выводим весь список продуктов в холодильнике
+        for i in list(freezer.keys()):
+            print(i, end=' ')
+        print()
+        product = input()
         # Если неверный ключ
         try:
             delete(product)
@@ -66,6 +89,7 @@ while com != "стоп":
     # сортирока списка продуктов
 
     elif 'увед' in com.lower():
+        new_day()
         notice()
 
     # завершение
