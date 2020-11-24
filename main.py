@@ -1,56 +1,25 @@
-# словарь со всеми продуктами
-freezer = {}
-# print("выберите продукт из вашего холодильника")
-com = ''
+import telebot
+from telebot import types
+bot = telebot.TeleBot('1415966035:AAG6D1ybRJWEO5JNQvWR7pV0c8gTzJ6KRDI')
 
 
-# функция добавления продукта
-def add(what, how_long):
-    freezer[what] = how_long
-    print('Продукт добавлен!')
+
+@bot.message_handler(commands=['start'])
+def start_message(message):
+    keyboard1 = telebot.types.ReplyKeyboardMarkup()
+    keyboard1.row('Добавить', 'Удалить')
+    bot.send_message(message.chat.id, 'Привет, я твой холодильник \n'
+                                      'напиши свои продукты и сколько они хранятся,'
+                                      'а я буду следить чтобы они не протухли)', reply_markup=keyboard1)
 
 
-# функция удаления продукта
-def delete(what):
-    del freezer[what]
-    print('Успешно удалено!')
+@bot.message_handler(content_types=['text'])
+def send_text(message):
+    if message.text == 'Добавить':
+        bot.send_message(message.chat.id, "Введите название продукта: ")
+        
+    elif message.text == 'Удалить':
+        bot.send_message(message.chat.id, 'Удаление...')
 
 
-while com != "стоп":
-    print("--------------------")
-    print("--------МЕНЮ--------")
-    print("======Команды:======")
-    print("1. Добавить продукт")
-    print("2. Удалить продукт")
-    print("0. Выход")
-    print("====================")
-    com = input('Введите команду: ')
-    # добавление продукта
-    if 'добавить' in com.lower():
-        product = input("Название продукта: ")
-        # проверка на то, число ли вводит пользователь или нет
-        try:
-            time = int(input(("сколько дней хранится?: ")))
-            add(product, time)
-        # если не число
-        except ValueError:
-            print('Недопустимое значение! введите число')
-
-    # удаление продукта
-    elif 'удалить' in com.lower():
-        product = input("Какой продукт удалить: ")
-        # Если неверный ключ
-        try:
-            delete(product)
-        except KeyError:
-            print("Такого продукта в холодильнике нет!")
-
-    # завершение
-    elif 'стоп' in com.lower():
-        print('завершаю работу')
-        break
-
-    else:
-        print('Неизвестная команда')
-
-print(freezer)
+bot.polling(none_stop=True)
