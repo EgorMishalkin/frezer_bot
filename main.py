@@ -22,8 +22,7 @@ def delete(what):
     print('Успешно удалено!')
 
 
-# функция редактирования
-def edit(what):
+def edit(what, how_long):
     pass
 
 
@@ -74,16 +73,16 @@ while com != "стоп":
     print("======Команды:======")
     print("1. Добавить продукт")
     print("2. Удалить продукт")
-    print("3. редактировать")
+    print("3. ред")
     print("4. увед")
     print("0. Выход")
     print("====================")
     com = input('Введите команду: ')
     # добавление продукта
+    stop = ''
 
     if 'добавить' in com.lower():
-        times = int(input('Сколько продуктов вы хотите положить? '))
-        for i in range (times):
+        while stop != "назад":
             product = input("Название продукта: ")
             # проверка на то, число ли вводит пользователь или нет
             try:
@@ -92,11 +91,16 @@ while com != "стоп":
             # если не число
             except ValueError:
                 print('Недопустимое значение! введите число')
+            stop = input("Продолжить или назад? ")
+            if 'назад' in stop.lower():
+                print("Возвращаемся в меню...")
 
-
-
+        if 'назад' in stop.lower():
+            break
+        else:
+            pass
             # удаление продукта
-    if 'удалить' in com.lower():
+    elif 'удалить' in com.lower():
         print("Какой продукт удалить: ", end='')
         # выводим весь список продуктов в холодильнике
         for i in list(freezer.keys()):
@@ -111,14 +115,24 @@ while com != "стоп":
     elif 'увед' in com.lower():
         new_day()
         notice()
+    elif 'ред' in com.lower():
+        print("Какой продукт редактировать: ", end='')
+        # выводим весь список продуктов в холодильнике
+        for i in list(freezer.keys()):
+            print(i, end=' ')
+        print()
+        product = input()
+        # Если неверный ключ
+        try:
+            edit(product)
+        except KeyError:
+            print("Такого продукта в холодильнике нет!")
+
 
     # завершение
     elif 'стоп' in com.lower():
         print('завершаю работу')
         break
-
-    elif product == 'назад':
-        print()
 
     else:
         print('Неизвестная команда')
