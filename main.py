@@ -3,25 +3,14 @@ freezer = {'сок': 30,
            'яблоко': 25,
            'котлеты': 1,
            'суп': 1}
-# словарь с отсортированными значениями
-sorted_freezer = {}
 com = ''
 
+
 # функция сортировки
-
-
-def sort():
-    for i in sorted(freezer.items(), key=lambda para: para[1]):
-        # sorted_freezer[i[0]] = i[1]
-        # i[0] - еда    i[1] - сколько живет
-        sorted_freezer[i[0]] = i[1]
-
-    for i in sorted(sorted_freezer.items(), key=lambda para: para[1]):
-        # sorted_freezer[i[0]] = i[1]
-        # i[0] - еда    i[1] - сколько живет
-        sorted_freezer[i[0]] = i[1]
-        if sorted_freezer[i[0]] == 1:
-            print('срок годности продукта истек')
+def notice():
+    for key, value in freezer.items():
+        if value == 1:
+            print(f'срок годности {key} истек')
 
 
 # функция добавления продукта
@@ -29,17 +18,14 @@ def add(what, how_long):
     freezer[what] = how_long
     print('Продукт добавлен!')
 
+
 # функция удаления продукта
-
-
 def delete(what):
     del freezer[what]
     print('Успешно удалено!')
 
 
 # основной цикл
-
-
 while com != "стоп":
     print("--------------------")
     print("--------МЕНЮ--------")
@@ -64,9 +50,7 @@ while com != "стоп":
     # удаление продукта
     elif 'удалить' in com.lower():
         product = input("Какой продукт удалить: ")
-
         # Если неверный ключ
-
         try:
             delete(product)
         except KeyError:
@@ -74,9 +58,8 @@ while com != "стоп":
 
     # сортирока списка продуктов
 
-    elif 'сорт' in com.lower():
-        sort()
-        print(sorted_freezer)
+    elif 'уведомления' in com.lower():
+        notice()
 
     # завершение
     elif 'стоп' in com.lower():
