@@ -35,8 +35,7 @@ def init_db(conn, force: bool = False):
 			user_id     INTEGER NOT NULL,
 			freezer     TEXT,
 			add_or_not     INT,
-			del_or_not     INT,
-			show_or_not     INT
+			del_or_not     INT
 		)
 	''')
 	conn.commit()
@@ -44,9 +43,9 @@ def init_db(conn, force: bool = False):
 
 # добавение значений в бд
 @ensure_connection
-def add_user(conn, user_id: int, freezer, add_or_not: int, del_or_not: int, show_or_not: int):
+def add_user(conn, user_id: int, freezer, add_or_not: int, del_or_not: int):
 	c = conn.cursor()
-	c.execute('INSERT INTO users (user_id, freezer, add_or_not, del_or_not, show_or_not) VALUES (?, ?, ?, ?, ?)', (user_id, freezer, add_or_not, del_or_not, show_or_not))
+	c.execute('INSERT INTO users (user_id, freezer, add_or_not, del_or_not) VALUES (?, ?, ?, ?)', (user_id, freezer, add_or_not, del_or_not))
 	conn.commit()
 
 
@@ -70,10 +69,10 @@ def do_start(message):
 		if get_user[0][0]:
 			bot.send_message(message.chat.id, 'Приветствую, ' + str(message.from_user.first_name) +'. Вы уже существуете в базе', reply_markup=keyboard1)
 		else:
-			add_user(user_id = message.from_user.id, freezer = '', add_or_not = 0, del_or_not = 0, show_or_not = 0)
+			add_user(user_id = message.from_user.id, freezer = '', add_or_not = 0, del_or_not = 0)
 			bot.send_message(message.chat.id, str(message.from_user.first_name) + ', регистрация прошла успешно!', reply_markup=keyboard1)
 	except IndexError: 
-		add_user(user_id = message.from_user.id, freezer = '', add_or_not = 0, del_or_not = 0, show_or_not = 0)
+		add_user(user_id = message.from_user.id, freezer = '', add_or_not = 0, del_or_not = 0)
 		bot.send_message(message.chat.id, str(message.from_user.first_name) + ', регистрация прошла успешно!', reply_markup=keyboard1)
 
 
@@ -95,7 +94,6 @@ def food(message):
 	user = message.from_user.id
 	value = c.execute(f'SELECT * FROM users WHERE user_id = {user}').fetchone()
 	freezer = value[1]
-	print(freezer)
 	if freezer == '':
 		bot.send_message(message.chat.id, 'В вашем холодильнике ничего нет. Скорее сходите закупиться!')
 	else:
@@ -142,7 +140,6 @@ def gettext(message):
 	value = c.execute(f'SELECT * FROM users WHERE user_id = {user}').fetchone()
 	add_or_not = value[2]
 	del_or_not = value[3]
-	show_or_not = value[4]
 	freezer = value[1]
 	# тут происходит обработка добавления
 	if add_or_not == 1:
@@ -180,17 +177,23 @@ def gettext(message):
 		food = food[0:-1]
 		how_long = mess.split(' ')[-1]
 		try:
-			a = freezer - mess + '\n'
-			c.execute(f'UPDATE users SET freezer = "{a}" WHERE user_id = {user}')
+			# c.execute(f'UPDATE users SET freezer = "{a}" WHERE user_id = {user}')
+			c.execute(f'DELETE FROM users WHERE freezer = "{mess}" AND user_id = {user}')
 			conn.commit()
 			# mess = 'банан 4'
 			# mess[0:-1] - название продукта
-			# for i in mess[0:-1]:
+			# for i in mess[0:-1]:f
 			#	string += f'{i} '
 			# строка string[0:-1] убирает лишний пробел в конце
 			# freezer[string[0:-1]] = mess[-1]
 			# freezer = mess
 			send_text(message, 'Удалено успешно!')
+			c = conn.cursor()
+			user = message.from_user.id
+			value = c.execute(f'SELECT * FROM users WHERE user_id = {user}').fetchone()
+			del_or_not = value[3]
+			c.execute(f'UPDATE users SET del_or_not = 0 WHERE user_id = {user}')
+			conn.commit()
 
 			c = conn.cursor()
 			user = message.from_user.id
@@ -199,10 +202,10 @@ def gettext(message):
 			c.execute(f'UPDATE users SET add_or_not = 0 WHERE user_id = {user}')
 			conn.commit()
 		# ошибка при вводе
-		except TypeError:
+		except KeyError:
 			send_text(message, 'Неизвестная ошибка!')
 
-		del_or_not = 0
+
 	else:
 		send_text(message, 'Неизвестная команда')
 
