@@ -52,20 +52,20 @@ def help_user(message):
     bot.send_message(message.chat.id, 'Бот, следящий за сроками продуктов. \n' +
                      'Функции: \n' +
                      '/добавить - добавление вашего продукта \n' +
-                     '/удалить - удаление вашего продукта')
+                     '/удалить - удаление вашего продукта \n' +
+                     '/список - выводит все содержимое вашего холодьлиника)')
 
 
 # функция добавления продукта
 @bot.message_handler(commands=['добавить'])
 def add_product(message):
-    sent = bot.send_message(message.chat.id, 'Введите продукт и сколько дней еще будет храниться:')
+    sent = bot.send_message(message.chat.id, 'Введите продукт и срок годности через пробел')
     bot.register_next_step_handler(sent, add_product_to_db)
 
 
 def add_product_to_db(message):
     try:
         c = conn.cursor()
-	# достаем продукт и срок годности
         prod, rem = message.text.split(' ')
         sql = f'INSERT INTO users (user_id, freezer, remain) VALUES ({message.chat.id}, "{prod}", {rem})'
         c.execute(sql)
@@ -77,15 +77,22 @@ def add_product_to_db(message):
 
 @bot.message_handler(commands=['удалить'])
 def del_product(message):
-    sent = bot.send_message(message.chat.id, 'Введите продукт, который надо удалить')
-    # перекидываем на другую функцию
+    c = conn.cursor()
+    prod = message.text
+    sql = f'SELECT freezer, remain FROM users WHERE user_id = {message.chat.id}'
+    c.execute(sql)
+    string = ''
+
+    for name, key in c.fetchall():
+        string += name + ' '
+
+    sent = bot.send_message(message.chat.id, 'Введите продукт, который надо удалить: ' + string)
     bot.register_next_step_handler(sent, del_product_from_db)
 
 
 def del_product_from_db(message):
     c = conn.cursor()
     prod = message.text
-    # удаляем значение из таблицы	
     sql = f'DELETE FROM users WHERE user_id = {message.chat.id} AND freezer = "{prod}"'
     print(sql, file=sys.stderr)
     c.execute(sql)
@@ -100,12 +107,14 @@ def show_product(message):
     sql = f'SELECT freezer, remain FROM users WHERE user_id = {message.chat.id}'
     c.execute(sql)
     string = ''
-	
-    # создаем красивую строчку 	
+
     for name, key in c.fetchall():
         string += name + ' ' + str(key) + '\n'
 
-    bot.send_message(message.chat.id, 'Список продуктов в холодильнике: \n' + string)
+    if string == '':
+        bot.send_message(message.chat.id, 'В вашем холодильнике ничего нет. Скорее сходите закупиться!')
+    else:
+        bot.send_message(message.chat.id, 'Список продуктов в холодильнике: \n' + string)
 
 
 if __name__ == '__main__':
