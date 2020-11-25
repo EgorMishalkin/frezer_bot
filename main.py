@@ -16,7 +16,8 @@ def send_text(message, text):
 def start_message(message):
     # создание клавиатуры
     keyboard1 = telebot.types.ReplyKeyboardMarkup()
-    keyboard1.row('/добавить', '/удалить', '/список', '/помощь')
+    keyboard1.row('/добавить', '/удалить')
+    keyboard1.row('/список', '/помощь')
     # создание клавиатуры
     bot.send_message(message.chat.id, 'Привет, я твой холодильник \n'
                                       'напиши свои продукты и сколько они хранятся,'
@@ -39,9 +40,9 @@ def start_message(message):
     string = ''
     # цикл который делает строчку со значениями словаря
     for i in freezer.keys():
-        string += f'{i} '
+        string += f'{i}, '
     # вывод сообщения
-    bot.send_message(message.chat.id, 'Введите продукт который надо удалить: ' + string)
+    bot.send_message(message.chat.id, 'Введите продукт который надо удалить: ' + string[0:-2])
     # если эта переменная равна 1, то мы понимаем, что надо выполнить функцию
     del_or_not = 1
 
@@ -63,13 +64,18 @@ def show_dict(message):
         bot.send_message(message.chat.id, string)
 
 
-# функция подсказки
+# функция подсказки пользователю
 @bot.message_handler(commands=['помощь'])
 def help_user(message):
-    bot.send_message(message.chat.id, 'Бот, следящий за сроками продуктов')
+    bot.send_message(message.chat.id, 'Бот, следящий за сроками продуктов. \n'
+                                      'Функции: \n'
+                                      '/добавить - добавление вашего продукта \n'
+                                      '/удалить - удаление вашего продукта \n'
+                                      'так же бот каждый день будет уведомлять вас о том, какие продукты стоит '
+                                      'съесть быстрее, а какие выкинуть')
 
 
-# функция получения
+# функция получения любого текста
 @bot.message_handler(content_types=['text'])
 def gettext(message):
     global add_or_not
