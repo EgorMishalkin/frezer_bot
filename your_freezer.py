@@ -36,15 +36,15 @@ def notice(message):
             verb = 'испортится'
         if value == 3:
             non_pull = 1
-            send_text(message, f'{key} {verb} через 3 дня! поторопитесь съесть)')
+            send_text(message, f'{key} {verb} через 3 дня! поторопитесь съесть/выпить)')
             clear_freezer[key] = value
         elif value == 2:
             non_pull = 1
-            send_text(message, f'{key} {verb} через 2 дня! поторопитесь съесть!!')
+            send_text(message, f'{key} {verb} через 2 дня! поторопитесь съесть/выпить!!')
             clear_freezer[key] = value
         elif value == 1:
             non_pull = 1
-            send_text(message, f'{key} {verb} завтра! поторопитесь съесть!!!')
+            send_text(message, f'{key} {verb} завтра! поторопитесь съесть/выпить!!!')
             clear_freezer[key] = value
         elif value == 0:
             non_pull = 1
@@ -125,7 +125,7 @@ def help_user(message):
                      'Функции: \n' +
                      '/добавить - добавление вашего продукта \n' +
                      '/удалить - удаление вашего продукта \n' +
-                     'Так же бот каждый день будет уведомлять вас о том, какие продукты стоит съесть быстрее, а какие выкинуть)')
+                     '/обновить - начало нового дня. Бот автоматически обновляет данные насчет ваших продуктов)')
 
 
 # функция получения
@@ -148,7 +148,7 @@ def gettext(message):
             freezer[string[0:-1]] = int(mess[-1])
             send_text(message, 'Успешно добавлено!')
         # ошибка при вводе
-        except IndexError:
+        except ValueError:
             send_text(message, 'Введены неверные данные!')
         add_or_not = 0
     # тут происходит обработка удаления
