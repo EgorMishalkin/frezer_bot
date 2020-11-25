@@ -58,32 +58,54 @@ def help_user(message):
 # функция добавления продукта
 @bot.message_handler(commands=['добавить'])
 def add_product(message):
-    sent = bot.send_message(message.chat.id, 'Введите продукт и срок годности через пробел')
+    sent = bot.send_message(message.chat.id, 'Введите продукт и сколько дней еще будет храниться:')
     bot.register_next_step_handler(sent, add_product_to_db)
 
+
 def add_product_to_db(message):
-    c = conn.cursor()
-    prod, rem = message.text.split(' ')
-    sql = f'INSERT INTO users (user_id, freezer, remain) VALUES ({message.chat.id}, "{prod}", {rem})'
-    print(sql, file=sys.stderr)
-    c.execute(sql)
-    conn.commit()
-    bot.send_message(message.chat.id, 'Thank you!')
+    try:
+        c = conn.cursor()
+	# достаем продукт и срок годности
+        prod, rem = message.text.split(' ')
+        sql = f'INSERT INTO users (user_id, freezer, remain) VALUES ({message.chat.id}, "{prod}", {rem})'
+        c.execute(sql)
+        conn.commit()
+        bot.send_message(message.chat.id, 'Продукт успешно добавлен!')
+    except ValueError:
+        bot.send_message(message.chat.id, 'Введены неверные данные!')
 
 
 @bot.message_handler(commands=['удалить'])
 def del_product(message):
     sent = bot.send_message(message.chat.id, 'Введите продукт, который надо удалить')
+    # перекидываем на другую функцию
     bot.register_next_step_handler(sent, del_product_from_db)
+
 
 def del_product_from_db(message):
     c = conn.cursor()
     prod = message.text
+    # удаляем значение из таблицы	
     sql = f'DELETE FROM users WHERE user_id = {message.chat.id} AND freezer = "{prod}"'
     print(sql, file=sys.stderr)
     c.execute(sql)
     conn.commit()
-    bot.send_message(message.chat.id, 'Thank you!')
+    bot.send_message(message.chat.id, 'Продукт удален!')
+
+
+@bot.message_handler(commands=['список'])
+def show_product(message):
+    c = conn.cursor()
+    prod = message.text
+    sql = f'SELECT freezer, remain FROM users WHERE user_id = {message.chat.id}'
+    c.execute(sql)
+    string = ''
+	
+    # создаем красивую строчку 	
+    for name, key in c.fetchall():
+        string += name + ' ' + str(key) + '\n'
+
+    bot.send_message(message.chat.id, 'Список продуктов в холодильнике: \n' + string)
 
 
 if __name__ == '__main__':
