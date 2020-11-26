@@ -8,6 +8,7 @@ bot = telebot.TeleBot('1446473769:AAEI5XlIHW56g0yl-reM6x1ZP3ciy8MfOB8')
 
 morph = pymorphy2.MorphAnalyzer()
 
+
 # функция подключния к бд
 def ensure_connection(func):
     def inner(*args, **kwargs):
@@ -97,7 +98,6 @@ def del_product_from_db(message):
     c = conn.cursor()
     prod = message.text
     sql = f'DELETE FROM users WHERE user_id = {message.chat.id} AND freezer = "{prod}"'
-    print(sql, file=sys.stderr)
     c.execute(sql)
     conn.commit()
     bot.send_message(message.chat.id, 'Продукт удален!')
@@ -117,7 +117,6 @@ def show_product(message):
 
     non_pull = 0
     for key, value in c.fetchall():
-        print(key, value)
         p = morph.parse(key)[0]
         if 'plur' in p.tag:
             verb = 'испортятся'
