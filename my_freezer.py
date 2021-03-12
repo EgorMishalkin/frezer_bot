@@ -4,7 +4,7 @@ import sqlite3
 import sys
 import pymorphy2
 
-bot = telebot.TeleBot('1446473769:AAEI5XlIHW56g0yl-reM6x1ZP3ciy8MfOB8')
+bot = telebot.TeleBot('1630139352:AAHa-C8Mo9MzJUNL6g-wswjOH_j4sMCTE7I')
 
 morph = pymorphy2.MorphAnalyzer()
 
