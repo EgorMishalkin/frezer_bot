@@ -7,7 +7,7 @@ import pymorphy2
 morph = pymorphy2.MorphAnalyzer()
 
 
-bot = telebot.TeleBot('1415966035:AAG6D1ybRJWEO5JNQvWR7pV0c8gTzJ6KRDI')
+bot = telebot.TeleBot('1446473769:AAEI5XlIHW56g0yl-reM6x1ZP3ciy8MfOB8')
 add_or_not = 0
 del_or_not = 0
 show_or_not = 0
