@@ -8,7 +8,7 @@ screencast - https://www.youtube.com/watch?v=HtcvzQ8uUok
 add products and be sure that they will not go bad!
 
 
-OC software command:
+OC software team:
   Egor Mishalkin 
   Ilya Tsyganov
   Timofey Tereshchenko
